@@ -6,21 +6,32 @@ import {
 	TextField,
 	Button,
 	Grid,
-	CssBaseline,
 	FormControl,
 	InputAdornment,
 	IconButton,
 } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Email, Lock, Visibility, VisibilityOff } from "@mui/icons-material";
 
 const LoginPage = () => {
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
 	const [showPassword, setShowPassword] = useState(false);
+	const navigate = useNavigate();
 
-	const handleLogin = () => {
+	const handleLogin = async () => {
 		// Perform your login logic here
+		let result = await fetch("http://localhost:4000/login", {
+			method: "post",
+			body: JSON.stringify({ email: username, password: password }),
+			headers: {
+				"Content-Type": "application/json",
+			},
+		});
+		result = await result.json();
+		localStorage.setItem("user", JSON.stringify(result));
+		console.log(result);
+		navigate("/");
 	};
 
 	const handlePasswordVisibility = () => {

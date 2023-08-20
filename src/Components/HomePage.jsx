@@ -1,37 +1,38 @@
-import React from "react";
-import { Container, Paper, Typography, Button, Grid } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import {
+	Container,
+	Paper,
+	Typography,
+	List,
+	ListItemText,
+	Box,
+	Button,
+	Grid,
+} from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import ResponsiveAppBar from "./ResponsiveAppBar";
+import ProjectWindow from "./ProjectWindow";
 
 const HomePage = () => {
+	const [userDetails, setUserDetails] = useState(null);
+	const navigate = useNavigate();
+	const [color, setColor] = useState("primary");
+
+	useEffect(() => {
+		// Fetch user details from localStorage using the 'user' key
+		const storedUser = localStorage.getItem("user");
+		if (storedUser) {
+			setUserDetails(JSON.parse(storedUser));
+		} else {
+			navigate("/login");
+		}
+	}, []);
+
 	return (
-		<Container maxWidth="md">
-			<Grid
-				container
-				justifyContent="center"
-				alignItems="center"
-				style={{ minHeight: "100vh" }}>
-				<Paper elevation={3} style={{ padding: "20px" }}>
-					<Typography variant="h4" align="center" gutterBottom>
-						Welcome to the System Designer App
-					</Typography>
-					<Typography variant="body1" paragraph>
-						Design and create your systems with ease using our powerful System
-						Designer App.
-					</Typography>
-					<Grid container spacing={2} justifyContent="center">
-						<Grid item>
-							<Button variant="contained" color="primary">
-								Get Started
-							</Button>
-						</Grid>
-						<Grid item>
-							<Button variant="outlined" color="primary">
-								Learn More
-							</Button>
-						</Grid>
-					</Grid>
-				</Paper>
-			</Grid>
-		</Container>
+		<>
+			<ResponsiveAppBar />
+			<ProjectWindow />
+		</>
 	);
 };
 

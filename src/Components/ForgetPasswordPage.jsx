@@ -8,7 +8,7 @@ import {
 	CssBaseline,
 	Avatar,
 } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 
 const containerStyle = {
@@ -30,9 +30,23 @@ const paperStyle = {
 
 const ForgotPasswordPage = () => {
 	const [email, setEmail] = useState("");
+	const navigate = useNavigate();
 
-	const handleResetPassword = () => {
+	const handleResetPassword = async () => {
 		// Perform password reset logic here
+		let response = await fetch(
+			"http://localhost:4000/users/getByEmail/" + email
+		);
+		if (response.status === 200) {
+			const userData = await response.json();
+			localStorage.setItem("user", JSON.stringify(userData));
+			navigate("/new-password");
+			// You can perform actions like showing a success message or navigating to a different page
+		} else {
+			const errorData = await response.json();
+			alert(errorData.error);
+			console.error("Created New password error:", errorData.error);
+		}
 	};
 
 	return (

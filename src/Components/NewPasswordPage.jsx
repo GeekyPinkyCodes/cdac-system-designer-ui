@@ -8,6 +8,8 @@ import {
 	CssBaseline,
 	Avatar,
 } from "@mui/material";
+
+import { useNavigate } from "react-router-dom";
 import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
 
 const containerStyle = {
@@ -30,9 +32,42 @@ const paperStyle = {
 const NewPasswordPage = () => {
 	const [newPassword, setNewPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
+	const navigate = useNavigate();
 
-	const handleSavePassword = () => {
-		// Perform logic to save the new password here
+	const handleSavePassword = async () => {
+		const user = JSON.parse(localStorage.getItem("user"));
+		if (!user) {
+			alert("User Not Found. Please login");
+			navigate("/login");
+		}
+
+		if (newPassword === "" || confirmPassword === "") {
+			alert("Password cannot be empty");
+			return;
+		}
+
+		if (newPassword !== confirmPassword) {
+			alert("New Password and Confirm Password Must Match.");
+			return;
+		}
+
+		let result = await fetch("http://localhost:4000/users/" + user.id, {
+			method: "PATCH",
+			body: JSON.stringify({
+				firstName: user.firstName,
+				lastName: user.lastName,
+				email: user.email,
+				password: newPassword,
+				phone: user.phone,
+				country: user.country,
+			}),
+			headers: {
+				"Content-Type": "application/json",
+			},
+		});
+		console.log(result);
+		alert("Password Updated Successfully!");
+		navigate("/login");
 	};
 
 	return (

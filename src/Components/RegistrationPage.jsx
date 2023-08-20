@@ -45,9 +45,37 @@ const RegistrationPage = () => {
 	const [phoneNumber, setPhoneNumber] = useState("");
 	const [password, setPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
+	const [country, setCountry] = useState("");
 
-	const handleRegister = () => {
+	const handleRegister = async () => {
 		// Perform user registration logic here
+		try {
+			const response = await fetch("http://localhost:4000/register", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					firstName: firstName,
+					lastName: lastName,
+					email: email,
+					password: password,
+					phone: phoneNumber,
+					country: country,
+				}),
+			});
+
+			if (response.status === 201) {
+				console.log("User registered successfully!");
+				// You can perform actions like showing a success message or navigating to a different page
+			} else {
+				const errorData = await response.json();
+				console.error("Registration error:", errorData.error);
+				// Handle registration errors (e.g., display error message)
+			}
+		} catch (error) {
+			console.error("Registration error:", error);
+		}
 	};
 
 	return (
@@ -104,17 +132,31 @@ const RegistrationPage = () => {
 							startAdornment: <EmailOutlinedIcon style={iconStyle} />,
 						}}
 					/>
-					<TextField
-						label="Phone Number"
-						variant="outlined"
-						fullWidth
-						margin="normal"
-						value={phoneNumber}
-						onChange={(e) => setPhoneNumber(e.target.value)}
-						InputProps={{
-							startAdornment: <PhoneOutlinedIcon style={iconStyle} />,
-						}}
-					/>
+					<Grid container spacing={2}>
+						<Grid item xs={8}>
+							<TextField
+								label="Phone Number"
+								variant="outlined"
+								fullWidth
+								margin="normal"
+								value={phoneNumber}
+								onChange={(e) => setPhoneNumber(e.target.value)}
+								InputProps={{
+									startAdornment: <PhoneOutlinedIcon style={iconStyle} />,
+								}}
+							/>
+						</Grid>
+						<Grid item xs={4}>
+							<TextField
+								label="Country"
+								variant="outlined"
+								fullWidth
+								margin="normal"
+								value={country}
+								onChange={(e) => setCountry(e.target.value)}
+							/>
+						</Grid>
+					</Grid>
 					<Grid container spacing={2}>
 						<Grid item xs={6}>
 							<TextField
