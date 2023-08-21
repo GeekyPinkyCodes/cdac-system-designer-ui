@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useEffect, useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -9,13 +9,31 @@ import Container from "@mui/material/Container";
 import Avatar from "@mui/material/Avatar";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import FormatAlignJustifyIcon from "@mui/icons-material/FormatAlignJustify";
-import SelectOrCreateProject from "./SelectOrCreateProject";
+import MenuIcon from "@mui/icons-material/Menu";
+import OpenProjectModal from "./OpenProjectModal";
+import CreateProjectModal from "./CreateProjectModal";
+import DeleteProjectModal from "./DeleteProjectModal";
 
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
+const settings = ["Profile", "Logout"];
+const projectOptions = ["Create New", "Open", "Delete"];
 
 function ResponsiveAppBar() {
-	const [anchorElUser, setAnchorElUser] = React.useState(null);
+	const [rerender, setRerender] = useState(false);
+	const [currentProject, setCurrentProject] = useState(null);
+	const [anchorElUser, setAnchorElUser] = useState(null);
+	const [anchorProjectOptions, setAnchorProjectOptions] = useState(null);
+	const [isOpenProjectModalOpen, setIsOpenProjectModalOpen] = useState(false);
+	const [isCreateProjectModalOpen, setIsCreateProjectModalOpen] =
+		useState(false);
+	const [isDeleteProjectModalOpen, setIsDeleteProjectModalOpen] =
+		useState(false);
+
+	useEffect(() => {
+		var currentProjectString = localStorage.getItem("CurrentProject");
+		if (currentProjectString !== null && currentProjectString !== "") {
+			setCurrentProject(JSON.parse(currentProjectString));
+		}
+	}, []);
 
 	const handleOpenUserMenu = (event) => {
 		setAnchorElUser(event.currentTarget);
@@ -25,14 +43,56 @@ function ResponsiveAppBar() {
 		setAnchorElUser(null);
 	};
 
-	const [isModalOpen, setIsModalOpen] = React.useState(false);
-
-	const handleOpenModal = () => {
-		setIsModalOpen(true);
+	const handleOpenProjectMenu = (event) => {
+		setAnchorProjectOptions(event.currentTarget);
 	};
 
-	const handleCloseModal = () => {
-		setIsModalOpen(false);
+	const handleCreateProjectMenu = (event) => {
+		setAnchorProjectOptions(event.currentTarget);
+	};
+
+	const handleDeleteProjectMenu = (event) => {
+		setAnchorProjectOptions(event.currentTarget);
+	};
+
+	const handleCloseProjectMenu = (projectOption) => {
+		setAnchorProjectOptions(null);
+		if (projectOption === "Open") {
+			console.log("Open Ho gya");
+			handleOpenOpenProjectModal();
+		} else if (projectOption === "Create New") {
+			console.log("Create Ho gya");
+			handleOpenCreateProjectModal();
+		} else if (projectOption === "Delete") {
+			console.log("Delete Ho gya");
+			handleOpenDeleteProjectModal();
+		}
+	};
+
+	const handleOpenOpenProjectModal = () => {
+		setIsOpenProjectModalOpen(true);
+		setRerender(!rerender);
+	};
+
+	const handleCloseOpenProjectModal = () => {
+		setIsOpenProjectModalOpen(false);
+		setRerender(!rerender);
+	};
+
+	const handleOpenCreateProjectModal = () => {
+		setIsCreateProjectModalOpen(true);
+	};
+
+	const handleCloseCreateProjectModal = () => {
+		setIsCreateProjectModalOpen(false);
+	};
+
+	const handleOpenDeleteProjectModal = () => {
+		setIsDeleteProjectModalOpen(true);
+	};
+
+	const handleCloseDeleteProjectModal = () => {
+		setIsDeleteProjectModalOpen(false);
 	};
 
 	const handleCreateProject = (newProjectName) => {
@@ -45,12 +105,48 @@ function ResponsiveAppBar() {
 			<AppBar position="static">
 				<Container maxWidth="xl">
 					<Toolbar disableGutters>
-						<FormatAlignJustifyIcon
-							onClick={handleOpenModal}
-							sx={{ display: { xs: "none", md: "flex" }, mr: 1 }}
-						/>
+						<Box sx={{ flexGrow: 0 }}>
+							<Tooltip title="Project Options">
+								<IconButton
+									onClick={handleOpenProjectMenu}
+									size="large"
+									edge="start"
+									color="inherit"
+									aria-label="menu"
+									sx={{ mr: 2 }}>
+									<MenuIcon />
+								</IconButton>
+
+								<Menu
+									sx={{ mt: "45px" }}
+									id="menu-projectOptions"
+									anchorEl={anchorProjectOptions}
+									anchorOrigin={{
+										vertical: "top",
+										horizontal: "left",
+									}}
+									keepMounted
+									transformOrigin={{
+										vertical: "top",
+										horizontal: "left",
+									}}
+									open={Boolean(anchorProjectOptions)}
+									onClose={handleCloseProjectMenu}>
+									{projectOptions.map((projectOption) => (
+										<MenuItem
+											key={projectOption}
+											onClick={(event) => {
+												handleCloseProjectMenu(projectOption);
+											}}>
+											<Typography textAlign="center">
+												{projectOption}
+											</Typography>
+										</MenuItem>
+									))}
+								</Menu>
+							</Tooltip>
+						</Box>
 						<Typography
-							onClick={handleOpenModal}
 							variant="h6"
 							noWrap
 							component="a"
@@ -63,8 +159,9 @@ function ResponsiveAppBar() {
 								color: "inherit",
 								textDecoration: "none",
 							}}>
-							Projects
+							Project : {currentProject && currentProject.name}
 						</Typography>
+
 						<Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
 							<Typography
 								variant="h6"
@@ -118,10 +215,18 @@ function ResponsiveAppBar() {
 					</Toolbar>
 				</Container>
 			</AppBar>
-			<SelectOrCreateProject
-				onCreate={handleCreateProject}
-				isOpen={isModalOpen}
-				onClose={handleCloseModal}
+			<OpenProjectModal
+				isOpen={isOpenProjectModalOpen}
+				onClose={handleCloseOpenProjectModal}
+			/>
+			<CreateProjectModal
+				isOpen={isCreateProjectModalOpen}
+				onClose={handleCloseCreateProjectModal}
+			/>
+			<DeleteProjectModal
+				isOpen={isDeleteProjectModalOpen}
+				onCancel={handleCloseDeleteProjectModal}
+				project={currentProject}
 			/>
 		</>
 	);

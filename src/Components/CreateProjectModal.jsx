@@ -12,12 +12,19 @@ const modalPaperStyle = {
 	outline: "none",
 };
 
-const CreateProjectModal = ({ isOpen, onClose, onCreate }) => {
+const CreateProjectModal = ({ isOpen, onClose }) => {
 	const [newProjectName, setNewProjectName] = useState("");
-	const handleCreateProject = () => {
+	const handleCreateProject = async () => {
 		if (newProjectName.trim() !== "") {
-			onCreate(newProjectName);
-			setNewProjectName("");
+			let result = await fetch("http://localhost:4000/projects", {
+				method: "post",
+				body: JSON.stringify({ name: newProjectName }),
+				headers: {
+					"Content-Type": "application/json",
+				},
+			});
+			result = await result.json();
+			console.log(JSON.stringify(result) + " Created!!!");
 			onClose();
 		}
 	};

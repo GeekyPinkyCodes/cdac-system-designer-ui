@@ -2,7 +2,6 @@ import * as React from "react";
 import { Grid } from "@mui/material";
 import ProjectExplorer from "./ProjectExplorer";
 import EditorWindow from "./EditorWindow";
-import SelectOrCreateProject from "./SelectOrCreateProject";
 
 export default function ProjectWindow() {
 	const [value, setValue] = React.useState(0);

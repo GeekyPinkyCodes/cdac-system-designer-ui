@@ -7,7 +7,6 @@ import {
 	ListItem,
 	ListItemText,
 } from "@mui/material";
-import CreateProjectModal from "./CreateProjectModal"; // Import the new modal component
 
 const modalPaperStyle = {
 	position: "absolute",
@@ -20,18 +19,13 @@ const modalPaperStyle = {
 	outline: "none",
 };
 
-const SelectOrCreateProject = ({ onCreate, isOpen, onClose }) => {
-	const [selectedProject, setSelectedProject] = useState(null);
+const OpenProjectModal = ({ isOpen, onClose }) => {
 	const [projects, setProjects] = useState([]);
-	const [projectDetails, setProjectDetails] = useState(null);
-	const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
 	useEffect(() => {
 		// Clear selected project and details when the modal is opened
 		if (isOpen) {
 			fetchProjects();
-			setSelectedProject(null);
-			setProjectDetails(null);
 		}
 	}, [isOpen]);
 
@@ -42,7 +36,7 @@ const SelectOrCreateProject = ({ onCreate, isOpen, onClose }) => {
 			);
 			const data = await response.json();
 			console.log(data);
-			setProjectDetails(data);
+			localStorage.setItem("CurrentProject", JSON.stringify(data));
 		} catch (error) {
 			console.error("Error fetching project details:", error);
 		}
@@ -61,16 +55,8 @@ const SelectOrCreateProject = ({ onCreate, isOpen, onClose }) => {
 	};
 
 	const handleProjectClick = (projectId) => {
-		setSelectedProject(projectId);
 		fetchProjectDetails(projectId);
-	};
-
-	const handleOpenCreateModal = () => {
-		setIsCreateModalOpen(true);
-	};
-
-	const handleCloseCreateModal = () => {
-		setIsCreateModalOpen(false);
+		onClose();
 	};
 
 	console.log(projects);
@@ -79,7 +65,7 @@ const SelectOrCreateProject = ({ onCreate, isOpen, onClose }) => {
 		<Modal open={isOpen} onClose={onClose}>
 			<Paper style={modalPaperStyle}>
 				<div className="modal">
-					<h2>Select or Create Project</h2>
+					<h2>Select Project</h2>
 					<List>
 						{projects.map((project) => (
 							<ListItem
@@ -90,37 +76,13 @@ const SelectOrCreateProject = ({ onCreate, isOpen, onClose }) => {
 							</ListItem>
 						))}
 					</List>
-					<Button onClick={handleOpenCreateModal} color="primary">
-						Create New Project
-					</Button>
-					{selectedProject && (
-						<div>
-							<h3>Project Details</h3>
-							{projectDetails ? (
-								<div>
-									<p>Project Name: {projectDetails.name}</p>
-									<p>File Name: {projectDetails.fileName}</p>
-								</div>
-							) : (
-								<p>Loading project details...</p>
-							)}
-						</div>
-					)}
 					<Button onClick={onClose} color="primary">
 						Close
 					</Button>
 				</div>
 			</Paper>
-			{/* <CreateProjectModal
-				isOpen={isCreateModalOpen}
-				onClose={handleCloseCreateModal}
-				onCreate={(newProjectName) => {
-					onCreate(newProjectName);
-					handleCloseCreateModal();
-				}}
-			/> */}
 		</Modal>
 	);
 };
 
-export default SelectOrCreateProject;
+export default OpenProjectModal;

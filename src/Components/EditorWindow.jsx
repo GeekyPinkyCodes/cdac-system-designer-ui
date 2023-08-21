@@ -57,9 +57,10 @@ export default function EditorWindow(props) {
 						value={value}
 						onChange={handleChange}
 						aria-label="basic tabs example">
-						{/* <Tab label="Structure" {...a11yProps(0)} /> */}
-						<Tab label="XML" {...a11yProps(0)} />
-						<Tab label="IDL" {...a11yProps(1)} />
+						<Tab label="Structure" {...a11yProps(0)} />
+						<Tab label="XML" {...a11yProps(1)} />
+						<Tab label="IDL" {...a11yProps(2)} />
+						<Tab label="JSON" {...a11yProps(3)} />
 					</Tabs>
 				</Box>
 				{/* <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
