@@ -9,7 +9,7 @@ import {
 	Avatar,
 	Grid,
 } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
@@ -46,6 +46,7 @@ const RegistrationPage = () => {
 	const [password, setPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
 	const [country, setCountry] = useState("");
+	const navigate = useNavigate();
 
 	const handleRegister = async () => {
 		// Perform user registration logic here
@@ -66,10 +67,13 @@ const RegistrationPage = () => {
 			});
 
 			if (response.status === 201) {
+				alert("User registered successfully!");
 				console.log("User registered successfully!");
+				navigate("/");
 				// You can perform actions like showing a success message or navigating to a different page
 			} else {
 				const errorData = await response.json();
+				alert(errorData.error);
 				console.error("Registration error:", errorData.error);
 				// Handle registration errors (e.g., display error message)
 			}

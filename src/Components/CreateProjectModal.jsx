@@ -24,6 +24,7 @@ const CreateProjectModal = ({ isOpen, onClose }) => {
 				},
 			});
 			result = await result.json();
+			localStorage.setItem("CurrentProject", JSON.stringify(result));
 			console.log(JSON.stringify(result) + " Created!!!");
 			onClose();
 		}
