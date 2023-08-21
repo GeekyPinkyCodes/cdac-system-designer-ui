@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Button, Paper, Typography } from "@mui/material";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { materialDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { parseString } from "xml2js";

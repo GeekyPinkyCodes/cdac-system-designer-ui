@@ -4,10 +4,8 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import SearchIcon from "@mui/icons-material/Search";
-import { InputAdornment, Paper, TextField } from "@mui/material";
-import FilesList from "./FilesList";
-import DynamicTreeView from "./DynamicTreeView";
+import { Paper } from "@mui/material";
+import StructureView from "./StructureView";
 
 function CustomTabPanel(props) {
 	const { children, value, index, ...other } = props;
@@ -41,17 +39,8 @@ function a11yProps(index) {
 	};
 }
 
-const files = ["file1.txt", "document.pdf", "image.jpg", "video.mp4"];
-const xmlFile = `<food>
-<name>Belgian Waffles</name>
-<price>$5.95</price>
-<description>Two of our famous Belgian Waffles with plenty of real maple syrup</description>
-<calories>650</calories>
-</food>`;
-
 export default function ProjectExplorer() {
 	const [value, setValue] = React.useState(0);
-	const [searchText, setSearchText] = React.useState("");
 
 	const handleChange = (event, newValue) => {
 		setValue(newValue);
@@ -93,7 +82,7 @@ export default function ProjectExplorer() {
 				</Box> */}
 				<CustomTabPanel value={value} index={0}>
 					{/* <FilesList files={files} /> */}
-					<DynamicTreeView />
+					<StructureView />
 				</CustomTabPanel>
 			</Paper>
 		</>

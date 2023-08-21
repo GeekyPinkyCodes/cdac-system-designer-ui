@@ -5,8 +5,8 @@ import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import { Paper } from "@mui/material";
-import CodeBlock from "./CodeBlock";
-import DynamicTreeView from "./DynamicTreeView";
+import XmlView from "./XmlView";
+import StructureView from "./StructureView";
 import XmlToIdlConverter from "./XmlToIdlConverter";
 import XmlToJsonConverter from "./XmlToJsonConverter";
 
@@ -42,7 +42,7 @@ function a11yProps(index) {
 	};
 }
 
-export default function EditorWindow(props) {
+export default function EditorWindow() {
 	const [value, setValue] = React.useState(0);
 	const [xmlContent, setXmlContent] = React.useState(null);
 
@@ -79,10 +79,10 @@ export default function EditorWindow(props) {
 					</Tabs>
 				</Box>
 				<CustomTabPanel value={value} index={0}>
-					<DynamicTreeView />
+					<StructureView />
 				</CustomTabPanel>
 				<CustomTabPanel value={value} index={1}>
-					<CodeBlock language={"xml"} code={xmlContent} />
+					<XmlView language={"xml"} code={xmlContent} />
 				</CustomTabPanel>
 				<CustomTabPanel value={value} index={2}>
 					<XmlToIdlConverter xmlContent={xmlContent} />

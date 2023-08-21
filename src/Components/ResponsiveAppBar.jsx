@@ -47,14 +47,6 @@ function ResponsiveAppBar() {
 		setAnchorProjectOptions(event.currentTarget);
 	};
 
-	const handleCreateProjectMenu = (event) => {
-		setAnchorProjectOptions(event.currentTarget);
-	};
-
-	const handleDeleteProjectMenu = (event) => {
-		setAnchorProjectOptions(event.currentTarget);
-	};
-
 	const handleCloseProjectMenu = (projectOption) => {
 		setAnchorProjectOptions(null);
 		if (projectOption === "Open") {
@@ -93,11 +85,6 @@ function ResponsiveAppBar() {
 
 	const handleCloseDeleteProjectModal = () => {
 		setIsDeleteProjectModalOpen(false);
-	};
-
-	const handleCreateProject = (newProjectName) => {
-		console.log("New project created:", newProjectName);
-		// You can add your logic to update the project list or state here
 	};
 
 	return (

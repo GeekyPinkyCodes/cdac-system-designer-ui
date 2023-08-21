@@ -40,7 +40,7 @@ const iconMappings = {
 	discriminator: <ArrowRightIcon />, // icon for discriminator
 };
 
-export default function DynamicTreeView() {
+export default function StructureView() {
 	const [xmlContent, setXmlContent] = React.useState(null);
 
 	React.useEffect(() => {
