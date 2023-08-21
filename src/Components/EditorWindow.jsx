@@ -4,10 +4,11 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import SearchIcon from "@mui/icons-material/Search";
-import { InputAdornment, Paper, TextField } from "@mui/material";
-import FilesList from "./FilesList";
+import { Paper } from "@mui/material";
 import CodeBlock from "./CodeBlock";
+import DynamicTreeView from "./DynamicTreeView";
+import XmlToIdlConverter from "./XmlToIdlConverter";
+import XmlToJsonConverter from "./XmlToJsonConverter";
 
 function CustomTabPanel(props) {
 	const { children, value, index, ...other } = props;
@@ -43,7 +44,21 @@ function a11yProps(index) {
 
 export default function EditorWindow(props) {
 	const [value, setValue] = React.useState(0);
-	const [searchText, setSearchText] = React.useState("");
+	const [xmlContent, setXmlContent] = React.useState(null);
+
+	React.useEffect(() => {
+		fetchAndSetXmlContent();
+	}, []);
+
+	const fetchAndSetXmlContent = async () => {
+		var project = JSON.parse(localStorage.getItem("CurrentProject"));
+		var result = await fetch(
+			`http://localhost:4000/projects/${project.id}/_read`
+		);
+		result = await result.json();
+		console.log(result.content);
+		setXmlContent(result.content);
+	};
 
 	const handleChange = (event, newValue) => {
 		setValue(newValue);
@@ -63,28 +78,17 @@ export default function EditorWindow(props) {
 						<Tab label="JSON" {...a11yProps(3)} />
 					</Tabs>
 				</Box>
-				{/* <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-					<TextField
-						sx={{
-							marginLeft: 20,
-							width: 300,
-						}}
-						label="Search"
-						variant="outlined"
-						fullWidth
-						margin="normal"
-						value={searchText}
-						onChange={(e) => setSearchText(e.target.value)}
-						InputProps={{
-							startAdornment: (
-								<InputAdornment position="start">
-									<SearchIcon />
-								</InputAdornment>
-							),
-						}}></TextField>
-				</Box> */}
+				<CustomTabPanel value={value} index={0}>
+					<DynamicTreeView />
+				</CustomTabPanel>
 				<CustomTabPanel value={value} index={1}>
-					<CodeBlock language={props.language} code={props.content} />
+					<CodeBlock language={"xml"} code={xmlContent} />
+				</CustomTabPanel>
+				<CustomTabPanel value={value} index={2}>
+					<XmlToIdlConverter xmlContent={xmlContent} />
+				</CustomTabPanel>
+				<CustomTabPanel value={value} index={3}>
+					<XmlToJsonConverter xmlContent={xmlContent} />
 				</CustomTabPanel>
 			</Paper>
 		</>

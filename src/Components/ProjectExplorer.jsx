@@ -92,8 +92,8 @@ export default function ProjectExplorer() {
 						}}></TextField>
 				</Box> */}
 				<CustomTabPanel value={value} index={0}>
-					<FilesList files={files} />
-					{/* <DynamicTreeView initialXmlInput={xmlFile} /> */}
+					{/* <FilesList files={files} /> */}
+					<DynamicTreeView />
 				</CustomTabPanel>
 			</Paper>
 		</>
