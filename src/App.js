@@ -6,6 +6,7 @@ import NewPasswordPage from "./Components/NewPasswordPage";
 import RegistrationPage from "./Components/RegistrationPage";
 import HomePage from "./Components/HomePage";
 
+
 export default function App() {
 	return (
 		<BrowserRouter>

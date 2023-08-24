@@ -52,12 +52,12 @@ export default function EditorWindow() {
 
 	const fetchAndSetXmlContent = async () => {
 		var project = JSON.parse(localStorage.getItem("CurrentProject"));
-		var result = await fetch(
-			`http://localhost:4000/projects/${project.id}/_read`
-		);
-		result = await result.json();
-		console.log(result.content);
-		setXmlContent(result.content);
+		if (project) {
+			var result = await fetch(`http://localhost:4000/projects/${project.id}`);
+			result = await result.json();
+			console.log(result.fileContent);
+			setXmlContent(result.fileContent);
+		}
 	};
 
 	const handleChange = (event, newValue) => {

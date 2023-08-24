@@ -48,7 +48,6 @@ function ResponsiveAppBar() {
 	};
 
 	const handleCloseProjectMenu = (projectOption) => {
-		setAnchorProjectOptions(null);
 		if (projectOption === "Open") {
 			console.log("Open Ho gya");
 			handleOpenOpenProjectModal();
@@ -59,6 +58,7 @@ function ResponsiveAppBar() {
 			console.log("Delete Ho gya");
 			handleOpenDeleteProjectModal();
 		}
+		setAnchorProjectOptions(null);
 	};
 
 	const handleOpenOpenProjectModal = () => {
