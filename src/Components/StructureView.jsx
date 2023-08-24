@@ -21,8 +21,8 @@ import LocalOfferIcon from "@mui/icons-material/LocalOffer";
 import Typography from "@mui/material/Typography";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import AddValueTypeModal from "./AddValueType";
 import AddConstantModal from "./AddConstantModal";
+import AddEnumerationModal from "./AddEnumerationModal";
 
 const ADD_CONSTANT = "Add Constant";
 const ADD_ENUMERATION = "Add Enumeration";
@@ -69,7 +69,8 @@ export default function StructureView() {
 	const [xmlContent, setXmlContent] = React.useState(null);
 	const [anchorElContextMenu, setAnchorElContextMenu] = React.useState(null);
 	const [selectedNode, setSelectedNode] = React.useState(null);
-	const [isOpenConstForm, setIsOpenConstForm] = React.useState(false);
+	const [isOpenConstModal, setIsOpenConstModal] = React.useState(false);
+	const [isOpenEnumModal, setIsOpenEnumModal] = React.useState(false);
 
 	React.useEffect(() => {
 		fetchAndSetXmlContent();
@@ -88,7 +89,9 @@ export default function StructureView() {
 	const handleCloseContextMenu = (setting) => {
 		console.log(setting);
 		if (setting === ADD_CONSTANT) {
-			setIsOpenConstForm(true);
+			setIsOpenConstModal(true);
+		} else if (setting === ADD_ENUMERATION) {
+			setIsOpenEnumModal(true);
 		}
 		setAnchorElContextMenu(null);
 		setSelectedNode(null);
@@ -104,27 +107,7 @@ export default function StructureView() {
 		}
 	};
 
-	const addConstant = async (name, type, value) => {
-		console.log(name, type, value);
-
-		// Modify xmlDoc and build the new XML content
-		const newConstantNode = xmlDoc.createElement("const");
-		newConstantNode.setAttribute("name", name);
-		newConstantNode.setAttribute("type", type);
-		newConstantNode.setAttribute("value", value);
-
-		// Find the <types> element and append the new const node
-		const typesNode = xmlDoc.querySelector("types");
-		typesNode.appendChild(newConstantNode);
-
-		// Serialize the updated XML content to a string
-		const updatedXmlContent = new XMLSerializer().serializeToString(xmlDoc);
-		console.log(updatedXmlContent);
-
-		// Update the state with the new XML content
-		setXmlContent(updatedXmlContent);
-
-		// Store the updated XML content using an API (replace the API URL)
+	async function saveToDatabase(updatedXmlContent) {
 		try {
 			const project = JSON.parse(localStorage.getItem("CurrentProject"));
 			if (project) {
@@ -143,8 +126,60 @@ export default function StructureView() {
 		} catch (error) {
 			console.error("Error storing updated XML content:", error);
 		}
+	}
 
-		setIsOpenConstForm(false); // Close the modal
+	const addEnum = async (name, extensibility, dataRepresentation) => {
+		console.log(name, extensibility, dataRepresentation);
+
+		const newNode = xmlDoc.createElement("enum");
+		newNode.setAttribute("name", name);
+		if (extensibility) newNode.setAttribute("extensibility", extensibility);
+		if (dataRepresentation)
+			newNode.setAttribute("allowed_data_representation", dataRepresentation);
+
+		// Find the <types> element and append the new const node
+		const typesNode = xmlDoc.querySelector("types");
+		typesNode.appendChild(newNode);
+
+		// Serialize the updated XML content to a string
+		const updatedXmlContent = new XMLSerializer().serializeToString(xmlDoc, {
+			format: true, // Add formatting (indentation and line breaks)
+		});
+		console.log(updatedXmlContent);
+
+		// Update the state with the new XML contentss
+		setXmlContent(updatedXmlContent);
+
+		// Store the updated XML content using an API (replace the API URL)
+		await saveToDatabase(updatedXmlContent);
+		setIsOpenConstModal(false); // Close the modal
+	};
+
+	const addConstant = async (name, type, value) => {
+		console.log(name, type, value);
+
+		// Modify xmlDoc and build the new XML content
+		const newNode = xmlDoc.createElement("const");
+		newNode.setAttribute("name", name);
+		newNode.setAttribute("type", type);
+		newNode.setAttribute("value", value);
+
+		// Find the <types> element and append the new const node
+		const typesNode = xmlDoc.querySelector("types");
+		typesNode.appendChild(newNode);
+
+		// Serialize the updated XML content to a string
+		const updatedXmlContent = new XMLSerializer().serializeToString(xmlDoc, {
+			format: true, // Add formatting (indentation and line breaks)
+		});
+		console.log(updatedXmlContent);
+
+		// Update the state with the new XML content
+		setXmlContent(updatedXmlContent);
+
+		// Store the updated XML content using an API (replace the API URL)
+		await saveToDatabase(updatedXmlContent);
+		setIsOpenConstModal(false); // Close the modal
 	};
 
 	const parser = new DOMParser();
@@ -208,9 +243,14 @@ export default function StructureView() {
 				))}
 			</Menu>
 			<AddConstantModal
-				isOpen={isOpenConstForm}
-				onClose={() => setIsOpenConstForm(false)}
+				isOpen={isOpenConstModal}
+				onClose={() => setIsOpenConstModal(false)}
 				onAdd={addConstant}
+			/>
+			<AddEnumerationModal
+				open={isOpenEnumModal}
+				onClose={() => setIsOpenEnumModal(false)}
+				onAdd={addEnum}
 			/>
 		</>
 	);

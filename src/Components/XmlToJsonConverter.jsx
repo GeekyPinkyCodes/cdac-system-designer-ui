@@ -1,4 +1,7 @@
 import React, { useEffect, useState } from "react";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { materialDark } from "react-syntax-highlighter/dist/esm/styles/prism";
+
 import { parseString } from "xml2js";
 
 const XmlToJsonConverter = ({ xmlContent }) => {
@@ -18,7 +21,15 @@ const XmlToJsonConverter = ({ xmlContent }) => {
 		convertXmlToJson();
 	}, []);
 
-	return <div>{jsonContent && <pre>{jsonContent}</pre>}</div>;
+	return (
+		<div>
+			{jsonContent && (
+				<SyntaxHighlighter language="js" style={materialDark}>
+					{jsonContent}
+				</SyntaxHighlighter>
+			)}
+		</div>
+	);
 };
 
 export default XmlToJsonConverter;

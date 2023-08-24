@@ -19,6 +19,7 @@
     "react-syntax-highlighter": "^15.5.0",
     "timers": "^0.1.1",
     "web-vitals": "^2.1.4",
+    "xml-formatter": "^3.5.0",
     "xml-js": "^1.6.11",
     "xml2js": "^0.6.2"
   },

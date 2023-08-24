@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { materialDark } from "react-syntax-highlighter/dist/esm/styles/prism";
+
 import { parseString } from "xml2js";
 
 const XmlToIdlConverter = ({ xmlContent }) => {
@@ -27,6 +28,30 @@ const XmlToIdlConverter = ({ xmlContent }) => {
 						});
 					} else {
 						generatedIdlCode += `const ${result.types.const.$.name}: ${result.types.const.$.type} = ${result.types.const.$.value};\n`;
+					}
+				}
+
+				if (result.types.enum) {
+					if (Array.isArray(result.types.enum)) {
+						result.types.enum.forEach((enumElement) => {
+							if (enumElement.$.extensibility) {
+								generatedIdlCode += `@extensibility(${enumElement.$.extensibility})\n`;
+							}
+
+							if (enumElement.$.allowed_data_representation)
+								generatedIdlCode += `@allowed_data_representation(${enumElement.$.allowed_data_representation})\n`;
+
+							generatedIdlCode += `enum ${enumElement.$.name}{\n};\n`;
+						});
+					} else {
+						if (result.types.enum.$.extensibility) {
+							generatedIdlCode += `@extensibility(${result.types.enum.$.extensibility})\n`;
+						}
+
+						if (result.types.enum.$.allowed_data_representation)
+							generatedIdlCode += `@allowed_data_representation(${result.types.enum.$.allowed_data_representation})\n`;
+
+						generatedIdlCode += `enum ${result.types.enum.$.name}{\n};\n`;
 					}
 				}
 
@@ -100,7 +125,7 @@ const XmlToIdlConverter = ({ xmlContent }) => {
 	return (
 		<div>
 			{idlCode && (
-				<SyntaxHighlighter language="idl" style={materialDark}>
+				<SyntaxHighlighter language="js" style={materialDark}>
 					{idlCode}
 				</SyntaxHighlighter>
 			)}
