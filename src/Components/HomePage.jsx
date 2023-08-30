@@ -26,8 +26,13 @@ const HomePage = () => {
 		console.log(storedUser);
 		if (!storedUser) {
 			navigate("/login");
+			return;
 		}
 		const parsedUser = JSON.parse(storedUser);
+		if (!parsedUser) {
+			navigate("/login");
+			return;
+		}
 		const userDetails = await fetchUserById(parsedUser.id);
 		localStorage.setItem("user", JSON.stringify(userDetails));
 		setUser(userDetails);
