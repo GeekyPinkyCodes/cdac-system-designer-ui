@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Modal, Paper, TextField, Button } from "@mui/material";
+import { createProject } from "../utils";
 
 const modalPaperStyle = {
 	position: "absolute",
@@ -12,20 +13,13 @@ const modalPaperStyle = {
 	outline: "none",
 };
 
-const CreateProjectModal = ({ isOpen, onClose }) => {
+const CreateProjectModal = ({ isOpen, onClose, onUpdate }) => {
 	const [newProjectName, setNewProjectName] = useState("");
 	const handleCreateProject = async () => {
 		if (newProjectName.trim() !== "") {
-			let result = await fetch("http://localhost:4000/projects", {
-				method: "post",
-				body: JSON.stringify({ name: newProjectName }),
-				headers: {
-					"Content-Type": "application/json",
-				},
-			});
-			result = await result.json();
-			localStorage.setItem("CurrentProject", JSON.stringify(result));
-			console.log(JSON.stringify(result) + " Created!!!");
+			const project = await createProject(newProjectName);
+			onUpdate(project);
+			console.log(JSON.stringify(project.name) + " Created!!!");
 			onClose();
 		}
 	};

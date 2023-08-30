@@ -1,11 +1,10 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import LoginPage from "./Components/LoginPage";
-import ForgetPasswordPage from "./Components/ForgetPasswordPage";
-import NewPasswordPage from "./Components/NewPasswordPage";
-import RegistrationPage from "./Components/RegistrationPage";
+import LoginPage from "./Components/Login/LoginPage";
+import ForgetPasswordPage from "./Components/Login/ForgetPasswordPage";
+import NewPasswordPage from "./Components/Login/NewPasswordPage";
+import RegistrationPage from "./Components/Login/RegistrationPage";
 import HomePage from "./Components/HomePage";
-
 
 export default function App() {
 	return (

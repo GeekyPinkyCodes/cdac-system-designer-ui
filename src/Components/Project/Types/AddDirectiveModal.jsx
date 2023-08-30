@@ -8,8 +8,9 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
+import { addChildNode } from "../../utils";
 
-const AddDirectiveModal = ({ open, onClose, onAdd }) => {
+const AddDirectiveModal = ({ xmlDoc, selectedNode, open, onClose, onAdd }) => {
 	const [directiveKind, setDirectiveKind] = useState("");
 	const [directiveValue, setDirectiveValue] = useState("");
 
@@ -19,11 +20,22 @@ const AddDirectiveModal = ({ open, onClose, onAdd }) => {
 		onClose();
 	};
 
+	const addDirective = async (kind, value) => {
+		console.log(kind, value);
+		// Modify xmlDoc and build the new XML content
+		const newNode = xmlDoc.createElement("directive");
+		newNode.setAttribute("kind", kind);
+		newNode.setAttribute("value", value);
+
+		var xmlString = addChildNode(xmlDoc, selectedNode, newNode);
+		onAdd(xmlString);
+	};
+
 	const handleAdd = () => {
 		// Perform any validation here if needed
 
 		// Call the callback function to add the directive
-		onAdd({ kind: directiveKind, value: directiveValue });
+		addDirective(directiveKind, directiveValue);
 
 		// Clear the fields
 		setDirectiveKind("");

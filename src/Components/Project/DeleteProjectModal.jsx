@@ -1,5 +1,6 @@
 import React from "react";
 import { Modal, Paper, Button } from "@mui/material";
+import { deleteProjectById } from "../utils";
 
 const modalPaperStyle = {
 	position: "absolute",
@@ -12,13 +13,15 @@ const modalPaperStyle = {
 	outline: "none",
 };
 
-const DeleteProjectModal = ({ isOpen, project, onCancel }) => {
+const DeleteProjectModal = ({ isOpen, project, onCancel, onDelete }) => {
+	React.useEffect(() => {
+		// This effect will be triggered whenever the value of project changes.
+		// You can use it to force a rerender.
+	}, [project]); // Add project to the dependency array
+
 	const handleDeleteProject = async () => {
-		console.log(project && project.name + " Deleted!!!");
-		await fetch("http://localhost:4000/projects/" + project.id, {
-			method: "delete",
-		});
-		localStorage.removeItem("CurrentProject");
+		deleteProjectById(project.id);
+		onDelete();
 		onCancel();
 	};
 

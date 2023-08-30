@@ -6,8 +6,13 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
-import { Grid, Paper } from "@mui/material";
-import { CenterFocusStrong } from "@mui/icons-material";
+import { Grid } from "@mui/material";
+import {
+	addChildNode,
+	findNodeByAttribute,
+	findNodeByAttributeAndAddChild,
+	findNodeByNodeNameAndAddChild,
+} from "../../utils";
 
 const modalPaperStyle = {
 	position: "absolute",
@@ -22,28 +27,58 @@ const modalPaperStyle = {
 	overflowY: "auto", // Scrollable content
 };
 
-const AddConstantModal = ({ isOpen, onClose, onAdd }) => {
+const AddConstantModal = ({ xmlDoc, selectedNode, isOpen, onClose, onAdd }) => {
 	const [constantName, setConstantName] = useState("");
 	const [constantType, setConstantType] = useState("");
 	const [constantValue, setConstantValue] = useState("");
+	const [error, setError] = useState(null);
 
 	const handleAdd = () => {
 		// Validate data if needed
-		// Call the onAdd callback with the new constant data
-		onAdd(constantName, constantType, constantValue);
+		var existingNode = findNodeByAttribute(selectedNode, "name", constantName);
 
+		if (existingNode) {
+			setError("Const with same name already exists");
+			return;
+		}
+
+		// Call the onAdd callback with the new constant data
+		addConstant(constantName, constantType, constantValue);
 		// Reset fields and close the modal
 		setConstantName("");
 		setConstantType("");
 		setConstantValue("");
+		setError(null);
 		onClose();
 	};
 
+	const handleCancel = () => {
+		setConstantName("");
+		setConstantType("");
+		setConstantValue("");
+		setError(null);
+		onClose();
+	};
+
+	const addConstant = async (name, type, value) => {
+		console.log(name, type, value);
+		// Modify xmlDoc and build the new XML content
+		const newNode = xmlDoc.createElement("const");
+		newNode.setAttribute("name", name);
+		newNode.setAttribute("type", type);
+		newNode.setAttribute("value", value);
+
+		// Find the <types> element and append the new const node
+		var xmlString = addChildNode(xmlDoc, selectedNode, newNode);
+		onAdd(xmlString);
+	};
+
 	return (
-		<Modal open={isOpen} onClose={onClose}>
+		<Modal open={isOpen} onClose={handleCancel}>
 			<div style={modalPaperStyle}>
 				<div className="modal">
 					<h2>Add Constant</h2>
+					<p style={{ color: "red" }}>{error}</p>
 					<Grid container spacing={2}>
 						<Grid item xs={12}>
 							<TextField
@@ -63,6 +98,21 @@ const AddConstantModal = ({ isOpen, onClose, onAdd }) => {
 									<MenuItem value="string">String</MenuItem>
 									<MenuItem value="number">Number</MenuItem>
 									<MenuItem value="boolean">Boolean</MenuItem>
+									<MenuItem value="byte">Byte</MenuItem>
+									<MenuItem value="int8">Int8</MenuItem>
+									<MenuItem value="uint8">Uint8</MenuItem>
+									<MenuItem value="char8">Char8</MenuItem>
+									<MenuItem value="char16">Char16</MenuItem>
+									<MenuItem value="int16">Int16</MenuItem>
+									<MenuItem value="uint16">Uint16</MenuItem>
+									<MenuItem value="int32">Int32</MenuItem>
+									<MenuItem value="uint32">Uint32</MenuItem>
+									<MenuItem value="int64">Int64</MenuItem>
+									<MenuItem value="uint64">Uint64</MenuItem>
+									<MenuItem value="float32">Float32</MenuItem>
+									<MenuItem value="float64">Float64</MenuItem>
+									<MenuItem value="float128">Float128</MenuItem>
+									<MenuItem value="wstring">Wstring</MenuItem>
 								</Select>
 							</FormControl>
 						</Grid>
@@ -87,7 +137,7 @@ const AddConstantModal = ({ isOpen, onClose, onAdd }) => {
 								</Button>
 								<Button
 									variant="outlined"
-									onClick={onClose}
+									onClick={handleCancel}
 									style={{ marginLeft: 20 }}>
 									Cancel
 								</Button>

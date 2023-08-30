@@ -19,7 +19,7 @@ const XmlToJsonConverter = ({ xmlContent }) => {
 			});
 		};
 		convertXmlToJson();
-	}, []);
+	}, [xmlContent]);
 
 	return (
 		<div>

@@ -28,6 +28,11 @@ const LoginPage = () => {
 				"Content-Type": "application/json",
 			},
 		});
+		if (result.status === 401) {
+			alert("Invalid Email or Password!");
+			return;
+		}
+
 		result = await result.json();
 		localStorage.setItem("user", JSON.stringify(result));
 		console.log(result);

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Modal, TextField, Button, makeStyles } from "@material-ui/core";
+import { addChildNode } from "../../utils";
 
 const useStyles = makeStyles((theme) => ({
 	modal: {
@@ -21,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const AddValueTypeModal = ({ open, onClose, onAdd }) => {
+const AddValueTypeModal = ({ xmlDoc, selectedNode, open, onClose, onAdd }) => {
 	const classes = useStyles();
 	const [name, setName] = useState("");
 	const [baseType, setBaseType] = useState("");
@@ -34,12 +35,20 @@ const AddValueTypeModal = ({ open, onClose, onAdd }) => {
 		setBaseType(event.target.value);
 	};
 
+	const addValueType = async (name, baseType) => {
+		console.log(name, baseType);
+
+		// Modify xmlDoc and build the new XML content
+		const newNode = xmlDoc.createElement("union");
+		newNode.setAttribute("name", name);
+		newNode.setAttribute("Discriminator", baseType);
+
+		var xmlString = addChildNode(xmlDoc, selectedNode, newNode);
+		onAdd(xmlString);
+	};
+
 	const handleAddClick = () => {
-		const newValueType = {
-			name: name,
-			baseType: baseType,
-		};
-		onAdd(newValueType);
+		addValueType(name, baseType);
 		setName("");
 		setBaseType("");
 		onClose();

@@ -5,10 +5,10 @@ import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import { Paper } from "@mui/material";
-import XmlView from "./XmlView";
-import StructureView from "./StructureView";
-import XmlToIdlConverter from "./XmlToIdlConverter";
-import XmlToJsonConverter from "./XmlToJsonConverter";
+import XmlView from "./Views/XmlView";
+import StructureView from "./Views/StructureView";
+import XmlToIdlConverter from "./Views/XmlToIdlConverter";
+import XmlToJsonConverter from "./Views/XmlToJsonConverter";
 
 function CustomTabPanel(props) {
 	const { children, value, index, ...other } = props;
@@ -42,23 +42,15 @@ function a11yProps(index) {
 	};
 }
 
-export default function EditorWindow() {
+export default function EditorWindow({ project, onUpdate }) {
 	const [value, setValue] = React.useState(0);
 	const [xmlContent, setXmlContent] = React.useState(null);
 
 	React.useEffect(() => {
-		fetchAndSetXmlContent();
-	}, []);
-
-	const fetchAndSetXmlContent = async () => {
-		var project = JSON.parse(localStorage.getItem("CurrentProject"));
 		if (project) {
-			var result = await fetch(`http://localhost:4000/projects/${project.id}`);
-			result = await result.json();
-			console.log(result.fileContent);
-			setXmlContent(result.fileContent);
+			setXmlContent(project.fileContent);
 		}
-	};
+	}, [project]);
 
 	const handleChange = (event, newValue) => {
 		setValue(newValue);
@@ -79,10 +71,10 @@ export default function EditorWindow() {
 					</Tabs>
 				</Box>
 				<CustomTabPanel value={value} index={0}>
-					<StructureView />
+					<StructureView project={project} onUpdate={onUpdate} />
 				</CustomTabPanel>
 				<CustomTabPanel value={value} index={1}>
-					<XmlView language={"xml"} code={xmlContent} />
+					<XmlView xmlContent={xmlContent} />
 				</CustomTabPanel>
 				<CustomTabPanel value={value} index={2}>
 					<XmlToIdlConverter xmlContent={xmlContent} />

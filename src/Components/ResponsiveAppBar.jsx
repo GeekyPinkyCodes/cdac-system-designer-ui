@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -10,16 +11,28 @@ import Avatar from "@mui/material/Avatar";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import MenuIcon from "@mui/icons-material/Menu";
-import OpenProjectModal from "./OpenProjectModal";
-import CreateProjectModal from "./CreateProjectModal";
-import DeleteProjectModal from "./DeleteProjectModal";
+import OpenProjectModal from "./Project/OpenProjectModal";
+import CreateProjectModal from "./Project/CreateProjectModal";
+import DeleteProjectModal from "./Project/DeleteProjectModal";
 
 const settings = ["Profile", "Logout"];
 const projectOptions = ["Create New", "Open", "Delete"];
 
-function ResponsiveAppBar() {
-	const [rerender, setRerender] = useState(false);
-	const [currentProject, setCurrentProject] = useState(null);
+function ProfileIcon({ firstName, lastName }) {
+	// Get the initials from the first and last name
+	var initials = "";
+	if (firstName) {
+		initials = initials + firstName[0];
+	}
+
+	if (lastName) {
+		initials = initials + lastName[0];
+	}
+
+	return <Avatar>{initials.toUpperCase()}</Avatar>;
+}
+
+function ResponsiveAppBar({ user, project, onUpdate }) {
 	const [anchorElUser, setAnchorElUser] = useState(null);
 	const [anchorProjectOptions, setAnchorProjectOptions] = useState(null);
 	const [isOpenProjectModalOpen, setIsOpenProjectModalOpen] = useState(false);
@@ -28,12 +41,9 @@ function ResponsiveAppBar() {
 	const [isDeleteProjectModalOpen, setIsDeleteProjectModalOpen] =
 		useState(false);
 
-	useEffect(() => {
-		var currentProjectString = localStorage.getItem("CurrentProject");
-		if (currentProjectString !== null && currentProjectString !== "") {
-			setCurrentProject(JSON.parse(currentProjectString));
-		}
-	}, []);
+	const navigate = useNavigate();
+
+	useEffect(() => {}, [project]);
 
 	const handleOpenUserMenu = (event) => {
 		setAnchorElUser(event.currentTarget);
@@ -43,8 +53,21 @@ function ResponsiveAppBar() {
 		setAnchorElUser(null);
 	};
 
+	const handleUserMenuClick = (setting) => {
+		if (setting === "Logout") {
+			localStorage.removeItem("user");
+			navigate("/login");
+		}
+		setAnchorElUser(null);
+	};
+
 	const handleOpenProjectMenu = (event) => {
 		setAnchorProjectOptions(event.currentTarget);
+	};
+
+	const handleOnDelete = () => {
+		localStorage.removeItem("project");
+		onUpdate(null);
 	};
 
 	const handleCloseProjectMenu = (projectOption) => {
@@ -63,12 +86,10 @@ function ResponsiveAppBar() {
 
 	const handleOpenOpenProjectModal = () => {
 		setIsOpenProjectModalOpen(true);
-		setRerender(!rerender);
 	};
 
 	const handleCloseOpenProjectModal = () => {
 		setIsOpenProjectModalOpen(false);
-		setRerender(!rerender);
 	};
 
 	const handleOpenCreateProjectModal = () => {
@@ -146,7 +167,7 @@ function ResponsiveAppBar() {
 								color: "inherit",
 								textDecoration: "none",
 							}}>
-							Project : {currentProject && currentProject.name}
+							Project : {project && project.name}
 						</Typography>
 
 						<Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
@@ -174,7 +195,10 @@ function ResponsiveAppBar() {
 						<Box sx={{ flexGrow: 0 }}>
 							<Tooltip title="Open settings">
 								<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-									<Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+									<ProfileIcon
+										firstName={user && user.firstName}
+										lastName={user && user.lastName}
+									/>
 								</IconButton>
 							</Tooltip>
 							<Menu
@@ -193,7 +217,9 @@ function ResponsiveAppBar() {
 								open={Boolean(anchorElUser)}
 								onClose={handleCloseUserMenu}>
 								{settings.map((setting) => (
-									<MenuItem key={setting} onClick={handleCloseUserMenu}>
+									<MenuItem
+										key={setting}
+										onClick={(event) => handleUserMenuClick(setting)}>
 										<Typography textAlign="center">{setting}</Typography>
 									</MenuItem>
 								))}
@@ -205,15 +231,18 @@ function ResponsiveAppBar() {
 			<OpenProjectModal
 				isOpen={isOpenProjectModalOpen}
 				onClose={handleCloseOpenProjectModal}
+				onUpdate={onUpdate}
 			/>
 			<CreateProjectModal
 				isOpen={isCreateProjectModalOpen}
 				onClose={handleCloseCreateProjectModal}
+				onUpdate={onUpdate}
 			/>
 			<DeleteProjectModal
 				isOpen={isDeleteProjectModalOpen}
 				onCancel={handleCloseDeleteProjectModal}
-				project={currentProject}
+				project={project}
+				onDelete={handleOnDelete}
 			/>
 		</>
 	);

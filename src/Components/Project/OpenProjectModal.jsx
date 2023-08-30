@@ -7,6 +7,7 @@ import {
 	ListItem,
 	ListItemText,
 } from "@mui/material";
+import { fetchProjectById, fetchProjects } from "../utils";
 
 const modalPaperStyle = {
 	position: "absolute",
@@ -19,43 +20,24 @@ const modalPaperStyle = {
 	outline: "none",
 };
 
-const OpenProjectModal = ({ isOpen, onClose }) => {
+const OpenProjectModal = ({ isOpen, onClose, onUpdate }) => {
 	const [projects, setProjects] = useState([]);
 
 	useEffect(() => {
 		// Clear selected project and details when the modal is opened
 		if (isOpen) {
-			fetchProjects();
+			fetchAndLoadProjects();
 		}
 	}, [isOpen]);
 
-	const fetchProjectDetails = async (projectId) => {
-		try {
-			const response = await fetch(
-				`http://localhost:4000/projects/${projectId}`
-			);
-			const data = await response.json();
-			console.log(data);
-			localStorage.setItem("CurrentProject", JSON.stringify(data));
-		} catch (error) {
-			console.error("Error fetching project details:", error);
-		}
+	const fetchAndLoadProjects = async () => {
+		const projects = await fetchProjects();
+		setProjects(projects);
 	};
 
-	const fetchProjects = async () => {
-		// Replace this with your actual API call to fetch project details
-		try {
-			const response = await fetch(`http://localhost:4000/projects`);
-			const data = await response.json();
-			console.log(data);
-			setProjects(data);
-		} catch (error) {
-			console.error("Error fetching project details:", error);
-		}
-	};
-
-	const handleProjectClick = (projectId) => {
-		fetchProjectDetails(projectId);
+	const handleProjectClick = async (projectId) => {
+		const project = await fetchProjectById(projectId);
+		onUpdate(project);
 		onClose();
 	};
 

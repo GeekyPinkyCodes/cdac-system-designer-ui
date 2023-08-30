@@ -8,8 +8,15 @@ import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import { Grid, InputLabel, Select } from "@mui/material";
+import { addChildNode } from "../../utils";
 
-const AddEnumerationModal = ({ open, onClose, onAdd }) => {
+const AddEnumerationModal = ({
+	xmlDoc,
+	selectedNode,
+	open,
+	onClose,
+	onAdd,
+}) => {
 	const [name, setName] = useState("");
 	const [isExtensibility, setIsExtensibility] = useState(false);
 	const [extensibility, setExtensibility] = useState(null);
@@ -23,11 +30,24 @@ const AddEnumerationModal = ({ open, onClose, onAdd }) => {
 		onClose();
 	};
 
+	const addEnum = async (name, extensibility, dataRepresentation) => {
+		console.log(name, extensibility, dataRepresentation);
+
+		const newNode = xmlDoc.createElement("enum");
+		newNode.setAttribute("name", name);
+		if (extensibility) newNode.setAttribute("extensibility", extensibility);
+		if (dataRepresentation)
+			newNode.setAttribute("allowed_data_representation", dataRepresentation);
+
+		var xmlString = addChildNode(xmlDoc, selectedNode, newNode);
+		onAdd(xmlString);
+	};
+
 	const handleAdd = () => {
 		// Perform any validation here if needed
 
 		// Call the callback function to add the enumeration with selected options
-		onAdd(name, extensibility, dataRepresentation);
+		addEnum(name, extensibility, dataRepresentation);
 
 		// Close the modal
 		handleClose();
@@ -85,7 +105,7 @@ const AddEnumerationModal = ({ open, onClose, onAdd }) => {
 									disabled={!isDataRepresentation}
 									value={dataRepresentation}
 									onChange={(e) => setDataRepresentation(e.target.value)}>
-									<MenuItem value="xcdr/xcdr2">XCDRIXCDR2</MenuItem>
+									<MenuItem value="xcdr|xcdr2">XCDR|XCDR2</MenuItem>
 									<MenuItem value="xcdr">XCDR</MenuItem>
 									<MenuItem value="xcdr2">XCDR2</MenuItem>
 								</Select>

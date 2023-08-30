@@ -1,26 +1,66 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ResponsiveAppBar from "./ResponsiveAppBar";
-import ProjectWindow from "./ProjectWindow";
+import ProjectWindow from "./Project/ProjectWindow";
+import { fetchProjectById, fetchUserById, saveProjectToDb } from "./utils";
 
 const HomePage = () => {
-	const [userDetails, setUserDetails] = useState(null);
+	const [user, setUser] = useState(null);
+	const [project, setProject] = useState(null);
+
 	const navigate = useNavigate();
 
-	useEffect(() => {
-		// Fetch user details from localStorage using the 'user' key
+	const fetchAndLoadProject = async () => {
+		const storedProject = localStorage.getItem("project");
+
+		if (storedProject) {
+			const parsedProject = JSON.parse(storedProject);
+			const projectDetails = await fetchProjectById(parsedProject.id);
+			localStorage.setItem("project", JSON.stringify(projectDetails));
+			setProject(projectDetails);
+		}
+	};
+
+	const fetchAndLoadUser = async () => {
 		const storedUser = localStorage.getItem("user");
-		if (storedUser) {
-			setUserDetails(JSON.parse(storedUser));
-		} else {
+		console.log(storedUser);
+		if (!storedUser) {
 			navigate("/login");
 		}
+		const parsedUser = JSON.parse(storedUser);
+		const userDetails = await fetchUserById(parsedUser.id);
+		localStorage.setItem("user", JSON.stringify(userDetails));
+		setUser(userDetails);
+	};
+
+	const handleOnUpdate = async (project) => {
+		await saveProjectToDb(project);
+		localStorage.setItem("project", JSON.stringify(project));
+		setProject(project);
+	};
+
+	const handlerOnLoad = async (project) => {
+		localStorage.setItem("project", JSON.stringify(project));
+		setProject(project);
+	};
+
+	useEffect(() => {
+		fetchAndLoadUser();
+		fetchAndLoadProject();
 	}, []);
 
 	return (
 		<>
-			<ResponsiveAppBar />
-			<ProjectWindow />
+			{user && (
+				<ResponsiveAppBar
+					user={user}
+					project={project}
+					onUpdate={handlerOnLoad}
+				/>
+			)}
+			{project != null && (
+				<ProjectWindow project={project} onUpdate={handleOnUpdate} />
+			)}
 		</>
 	);
 };
