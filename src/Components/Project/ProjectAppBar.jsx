@@ -11,9 +11,9 @@ import Avatar from "@mui/material/Avatar";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import MenuIcon from "@mui/icons-material/Menu";
-import OpenProjectModal from "./Project/OpenProjectModal";
-import CreateProjectModal from "./Project/CreateProjectModal";
-import DeleteProjectModal from "./Project/DeleteProjectModal";
+import OpenProjectModal from "./OpenProjectModal";
+import CreateProjectModal from "./CreateProjectModal";
+import DeleteProjectModal from "./DeleteProjectModal";
 
 const settings = ["Profile", "Logout"];
 const projectOptions = ["Create New", "Open", "Delete"];
@@ -32,7 +32,7 @@ function ProfileIcon({ firstName, lastName }) {
 	return <Avatar>{initials.toUpperCase()}</Avatar>;
 }
 
-function ResponsiveAppBar({ user, project, onUpdate }) {
+function ProjectAppBar({ user, project, onUpdate }) {
 	const [anchorElUser, setAnchorElUser] = useState(null);
 	const [anchorProjectOptions, setAnchorProjectOptions] = useState(null);
 	const [isOpenProjectModalOpen, setIsOpenProjectModalOpen] = useState(false);
@@ -247,4 +247,4 @@ function ResponsiveAppBar({ user, project, onUpdate }) {
 		</>
 	);
 }
-export default ResponsiveAppBar;
+export default ProjectAppBar;

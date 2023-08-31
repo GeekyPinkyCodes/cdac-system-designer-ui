@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import ResponsiveAppBar from "./ResponsiveAppBar";
+import ProjectAppBar from "./Project/ProjectAppBar";
 import ProjectWindow from "./Project/ProjectWindow";
 import { fetchProjectById, fetchUserById, saveProjectToDb } from "./utils";
 
@@ -57,11 +57,7 @@ const HomePage = () => {
 	return (
 		<>
 			{user && (
-				<ResponsiveAppBar
-					user={user}
-					project={project}
-					onUpdate={handlerOnLoad}
-				/>
+				<ProjectAppBar user={user} project={project} onUpdate={handlerOnLoad} />
 			)}
 			{project != null && (
 				<ProjectWindow project={project} onUpdate={handleOnUpdate} />
