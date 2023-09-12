@@ -49,7 +49,7 @@ const RegistrationPage = () => {
 	const navigate = useNavigate();
 
 	const handleRegister = async () => {
-		// Perform user registration logic here
+		//  registration logic 
 		try {
 			const response = await fetch("http://localhost:4000/register", {
 				method: "POST",
@@ -65,12 +65,11 @@ const RegistrationPage = () => {
 					country: country,
 				}),
 			});
-
+			// You can perform actions like showing a success message or navigating to a different page
 			if (response.status === 201) {
 				alert("User registered successfully!");
 				console.log("User registered successfully!");
 				navigate("/");
-				// You can perform actions like showing a success message or navigating to a different page
 			} else {
 				const errorData = await response.json();
 				alert(errorData.error);

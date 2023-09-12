@@ -47,8 +47,8 @@ const settings = [
 	ADD_MODULE,
 	ADD_STRUCT,
 	ADD_TYPEDEF,
-	ADD_UNION,
-	ADD_VALUETYPE,
+	// ADD_UNION,
+	// ADD_VALUETYPE,
 ];
 
 const iconMappings = {

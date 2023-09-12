@@ -18,37 +18,6 @@ const saveProjectToDb = async (project) => {
 	}
 };
 
-// const addNodeToPath = (
-// 	xmlDoc,
-// 	nodePath,
-// 	newNodeName,
-// 	attributeName,
-// 	attributeValue
-// ) => {
-// 	const nodeNames = nodePath.split(" > ");
-
-// 	let currentNode = xmlDoc.documentElement;
-// 	for (const nodeName of nodeNames) {
-// 		const foundNode = findNodeByAttributeName(
-// 			currentNode,
-// 			attributeName,
-// 			nodeName
-// 		);
-// 		if (foundNode) {
-// 			currentNode = foundNode;
-// 		} else {
-// 			console.log(
-// 				`Node with attribute ${attributeName}='${nodeName}' not found in path.`
-// 			);
-// 			return;
-// 		}
-// 	}
-
-// 	const newChildNode = xmlDoc.createElement(newNodeName);
-// 	newChildNode.setAttribute(attributeName, attributeValue);
-// 	currentNode.appendChild(newChildNode);
-// };
-
 const fetchProjects = async () => {
 	// Replace this with your actual API call to fetch project details
 	try {

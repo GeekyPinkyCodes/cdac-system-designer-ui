@@ -52,7 +52,7 @@ const HomePage = () => {
 	useEffect(() => {
 		fetchAndLoadUser();
 		fetchAndLoadProject();
-	}, []);
+	}, [project]);
 
 	return (
 		<>

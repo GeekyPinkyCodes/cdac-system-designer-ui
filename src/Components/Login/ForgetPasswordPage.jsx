@@ -37,11 +37,11 @@ const ForgotPasswordPage = () => {
 		let response = await fetch(
 			"http://localhost:4000/users/getByEmail/" + email
 		);
+		// You can perform actions like showing a success message or navigating to a different page
 		if (response.status === 200) {
 			const userData = await response.json();
 			localStorage.setItem("user", JSON.stringify(userData));
 			navigate("/new-password");
-			// You can perform actions like showing a success message or navigating to a different page
 		} else {
 			const errorData = await response.json();
 			alert(errorData.error);

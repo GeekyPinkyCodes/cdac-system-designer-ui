@@ -15,7 +15,7 @@ import OpenProjectModal from "./OpenProjectModal";
 import CreateProjectModal from "./CreateProjectModal";
 import DeleteProjectModal from "./DeleteProjectModal";
 
-const settings = ["Profile", "Logout"];
+const settings = ["Logout"];
 const projectOptions = ["Create New", "Open", "Delete"];
 
 function ProfileIcon({ firstName, lastName }) {

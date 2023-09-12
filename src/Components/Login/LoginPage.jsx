@@ -20,7 +20,7 @@ const LoginPage = () => {
 	const navigate = useNavigate();
 
 	const handleLogin = async () => {
-		// Perform your login logic here
+		//  login logic 
 		let result = await fetch("http://localhost:4000/login", {
 			method: "post",
 			body: JSON.stringify({ email: username, password: password }),

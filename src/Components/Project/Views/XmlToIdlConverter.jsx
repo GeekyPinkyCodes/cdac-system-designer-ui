@@ -113,15 +113,37 @@ const XmlToIdlConverter = ({ xmlContent }) => {
 				}
 				idlCode += `  };\n`;
 				break;
-			// Handle other element types as needed
+			case "const":
+				idlCode += `  const ${element.$.type} ${element.$.name} = ${element.$.value};\n`;
+				break;
+			case "directive":
+				idlCode += `  // Directive: ${element.$.value}\n`;
+				break;
+			case "typedef":
+				idlCode += `  typedef ${element.$.type} ${element.$.name};\n`;
+				break;
+			// Add support for other element types here
+			// For example:
+			// case "union":
+			//   idlCode += `  union ${element.$.name} {\n`;
+			//   // Handle union fields
+			//   idlCode += `  };\n`;
+			//   break;
+			// case "interface":
+			//   idlCode += `  interface ${element.$.name} {\n`;
+			//   // Handle interface methods/properties
+			//   idlCode += `  };\n`;
+			//   break;
+			// Add more cases as needed
 			default:
 				// Handle unsupported element types or add custom logic
+				// For unsupported types, you might want to log an error or skip the element
+				console.warn(`Unsupported element type: ${element.$.type}`);
 				break;
 		}
 
 		return idlCode;
 	};
-
 	return (
 		<div>
 			{idlCode && (
